@@ -11,7 +11,11 @@
           <img :src="avatar" alt="employee-avatar" class="employee-avatar">
         </div>
         <div class="p-col">
-          <div class="employee-full-name">{{fullName}}</div>
+          <div class="employee-full-name">
+            <button class="profile-check-btn" @click="showProfile">
+              {{fullName}}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -31,6 +35,10 @@
 <script>
 export default {
   props: {
+    id: {
+      type: String,
+      required: true
+    },
     avatar: {
       type: String,
       required: true
@@ -55,6 +63,11 @@ export default {
       type: String,
       required: true
     }
+  },
+  methods: {
+    showProfile() {
+      this.$emit('showProfile', this.id)
+    }
   }
 }
 </script>
@@ -74,6 +87,14 @@ export default {
   .employee-avatar {
     width: 50px;
     height: 50px;
+  }
+
+  .employee-full-name {
+    .profile-check-btn {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
   }
 }
 </style>

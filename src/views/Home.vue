@@ -35,21 +35,24 @@
       </div>
     </div>
     <div class="user-list">
-      <user-list-item v-for="user of sortedUsers" :key="user.id" :title="user.title" :email="user.email"
-                      :avatar="user.avatar" :full-name="user.fullName" :year="user.year"
+      <user-list-item @showProfile="showModal" v-for="user of sortedUsers" :key="user.id" :title="user.title" :email="user.email"
+                      :avatar="user.avatar" :full-name="user.fullName" :year="user.year" :id="user.id"
                       :phone="user.phone"></user-list-item>
     </div>
   </div>
+  <show-profile-dialog @closeModal="closeModal" :show-profile="showProfile" :user-info="userInfo"></show-profile-dialog>
 </template>
 
 <script>
 import {mapActions, mapGetters} from "vuex";
 import {FETCH_USERS} from "@/store/users/action-types";
 import UserListItem from "@/components/UserListItem";
-
+import ShowProfileDialog from '@/components/ShowProfileDialog';
 export default {
   data() {
     return {
+      showProfileUserId: null,
+      showProfile: false,
       searchField: '',
       selectedFieldSorting: {name: 'TITLE'},
       selectedAlphabeticSorting: {name: 'ASC'},
@@ -71,6 +74,9 @@ export default {
     ...mapGetters('users', [
       'usersInfo'
     ]),
+    userInfo() {
+      return this.usersInfo.find(user => user.id === this.showProfileUserId)
+    },
     sortedUsersCount() {
       return this.sortedUsers.length
     },
@@ -133,15 +139,31 @@ export default {
   methods: {
     ...mapActions('users', [
       FETCH_USERS
-    ])
+    ]),
+    showModal(id) {
+      this.showProfile = true
+      this.showProfileUserId = id
+    },
+    closeModal() {
+      this.showProfile = false
+      this.showProfileUserId = null
+    }
   },
   components: {
-    UserListItem
+    UserListItem,
+    ShowProfileDialog
   }
 }
 </script>
 
 <style scoped lang="scss">
+.p-button {
+  background-color: #f5540b;
+  outline: none;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
 .find-input-wrapper {
   background-color: white;
   padding: 25px;
@@ -157,14 +179,6 @@ export default {
     font-size: 18px;
     font-weight: 500;
     color: #666d77;
-  }
-
-  .p-button {
-    background-color: #f5540b;
-    outline: none;
-    border: none;
-    text-transform: uppercase;
-    font-weight: 700;
   }
 
   .field-sort, .alphabetic-sort {
@@ -184,5 +198,7 @@ export default {
     }
   }
 }
+
+
 
 </style>
