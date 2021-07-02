@@ -40,14 +40,16 @@
                       :phone="user.phone"></user-list-item>
     </div>
   </div>
-  <show-profile-dialog @closeModal="closeModal" :show-profile="showProfile" :user-info="userInfo"></show-profile-dialog>
+  <show-profile-dialog @editUser="editUser" @deleteUser="deleteUser" @closeModal="closeModal" :show-profile="showProfile" :user-info="userInfo"></show-profile-dialog>
+  <delete-profile-dialog @acceptDeleteProfile="acceptDeleteUser" @rejectDeleteProfile="rejectDeleteUser" :delete-profile="deleteProfile" :user-info="userInfo"></delete-profile-dialog>
 </template>
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-import {FETCH_USERS} from "@/store/users/action-types";
+import {DELETE_USER, FETCH_USERS} from "@/store/users/action-types";
 import UserListItem from "@/components/UserListItem";
-import ShowProfileDialog from '@/components/ShowProfileDialog';
+import ShowProfileDialog from "@/components/ShowProfileDialog";
+import DeleteProfileDialog from "@/components/DeleteProfileDialog"
 export default {
   data() {
     return {
@@ -56,6 +58,7 @@ export default {
       searchField: '',
       selectedFieldSorting: {name: 'TITLE'},
       selectedAlphabeticSorting: {name: 'ASC'},
+      deleteProfile: false,
       firstSort: [
         {name: 'TITLE'},
         {name: 'FIRST NAME'},
@@ -138,7 +141,8 @@ export default {
   },
   methods: {
     ...mapActions('users', [
-      FETCH_USERS
+      FETCH_USERS,
+      DELETE_USER
     ]),
     showModal(id) {
       this.showProfile = true
@@ -146,12 +150,29 @@ export default {
     },
     closeModal() {
       this.showProfile = false
+    },
+    editUser() {
+      this.closeModal()
+    },
+    deleteUser(id) {
+      this.closeModal()
+      this.deleteProfile = true
+      this.showProfileUserId = id
+    },
+    rejectDeleteUser() {
+      this.deleteProfile = false
       this.showProfileUserId = null
+    },
+    acceptDeleteUser(id) {
+      this.deleteProfile = false
+      this.showProfileUserId = null
+      this.DELETE_USER(id)
     }
   },
   components: {
     UserListItem,
-    ShowProfileDialog
+    ShowProfileDialog,
+    DeleteProfileDialog
   }
 }
 </script>

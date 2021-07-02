@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog v-model:visible="showDialog" modal :closable="false" class="p-dialog" content-class="user-info-dialog" :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
+    <Dialog v-model:visible="showDialog" modal :closable="false" class="p-dialog" content-class="user-info-dialog" :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw', padding: '5px'}">
           <div class="user-info-dialog">
             <img :src="userInfo.avatar" alt="user-avatar" class="user-info-dialog-avatar">
             <h2 class="user-info-dialog-full-name">{{userInfo.fullName}}</h2>
@@ -14,8 +14,8 @@
                 <Button label="CLOSE" class="close-dialog-btn" @click="closeModal"/>
               </div>
               <div class="p-col">
-                <Button label="EDIT"/>
-                <Button label="DELETE" />
+                <Button label="EDIT" @click="editUser"/>
+                <Button label="DELETE" @click="deleteUser"/>
               </div>
             </div>
           </template>
@@ -46,14 +46,13 @@ export default {
   },
   methods: {
     closeModal() {
-      console.log('fff')
       this.$emit('closeModal')
     },
     editUser() {
-
+      this.$emit('editUser', this.userInfo)
     },
     deleteUser() {
-
+      this.$emit('deleteUser', this.userInfo.id)
     },
   },
 }
